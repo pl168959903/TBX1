@@ -83,22 +83,64 @@ void ADC_IRQHandler(void)
  *
  * @details     The PA/PB/PG/PH default IRQ, declared in startup_M031Series.s.
  */
-void GPABGH_IRQHandler(void)
-{
+void GPABGH_IRQHandler( void ) {
     volatile uint32_t temp;
-
-    /* To check if PB.2 interrupt occurred */
-    if (GPIO_GET_INT_FLAG(PB, BIT2))
-    {
-        GPIO_CLR_INT_FLAG(PB, BIT2);
-        printf("PB.2 INT occurred.\n");
+    
+    if ( GPIO_GET_INT_FLAG( PA, BIT6 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT6 );
+        if (PA6 == 0){
+            printf( "PA.6 falling INT occurred.\n" );
+        }
+        else{
+            printf( "PA.6 rising INT occurred.\n" );
+        }
     }
-    else
-    {
-        /* Un-expected interrupt. Just clear all PB interrupts */
-        temp = PB->INTSRC;
-        PB->INTSRC = temp;
-        printf("Un-expected interrupts.\n");
+    else if( GPIO_GET_INT_FLAG( PA, BIT7 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT7 );
+        if (PA7 == 0){
+            printf( "PA.7 falling INT occurred.\n" );
+        }
+        else{
+            printf( "PA.7 rising INT occurred.\n" );
+        }
+    }
+    else if( GPIO_GET_INT_FLAG( PA, BIT9 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT9 );
+        if (PA9 == 0){
+            printf( "PA.9 falling INT occurred.\n" );
+        }
+        else{
+            printf( "PA.9 rising INT occurred.\n" );
+        }
+    }
+    else if( GPIO_GET_INT_FLAG( PA, BIT10 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT10 );
+        if (PA10 == 0){
+            printf( "PA.10 falling INT occurred.\n" );
+        }
+        else{
+            printf( "PA.10 rising INT occurred.\n" );
+        }
+    }
+    else if( GPIO_GET_INT_FLAG( PA, BIT11 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT11 );
+        if (PA11 == 0){
+            printf( "PA.11 falling INT occurred.\n" );
+        }
+        else{
+            printf( "PA.11 rising INT occurred.\n" );
+        }
+    }
+    else {
+        printf( "Un-expected interrupts.\n" );
+        printf( "PA->INTSRC = 0x%04X.\n",PA->INTSRC);
+        printf( "PB->INTSRC = 0x%04X.\n",PB->INTSRC);
+        printf( "PC->INTSRC = 0x%04X.\n",PC->INTSRC);
+        printf( "PD->INTSRC = 0x%04X.\n",PD->INTSRC);
+        printf( "PE->INTSRC = 0x%04X.\n",PE->INTSRC);
+        printf( "PF->INTSRC = 0x%04X.\n",PF->INTSRC);
+        printf( "PG->INTSRC = 0x%04X.\n",PG->INTSRC);
+        printf( "PH->INTSRC = 0x%04X.\n",PH->INTSRC);
     }
 }
 

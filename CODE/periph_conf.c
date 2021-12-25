@@ -85,9 +85,9 @@ void GPIO_Init()
 
         (0x0UL << GPIO_MODE_MODE9_Pos) |
 
-        (0x0UL << GPIO_MODE_MODE10_Pos) |
+        (0x3UL << GPIO_MODE_MODE10_Pos) |
 
-        (0x0UL << GPIO_MODE_MODE11_Pos) |
+        (0x3UL << GPIO_MODE_MODE11_Pos) |
 
         u32RegDefault;
 
