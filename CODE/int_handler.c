@@ -100,17 +100,21 @@ void GPABGH_IRQHandler( void ) {
         if (PA7 == 0){
             printf( "PA.7 falling INT occurred.\n" );
         }
-        else{
+        else{ 
             printf( "PA.7 rising INT occurred.\n" );
         }
     }
     else if( GPIO_GET_INT_FLAG( PA, BIT9 ) ) {
         GPIO_CLR_INT_FLAG( PA, BIT9 );
         if (PA9 == 0){
-            printf( "PA.9 falling INT occurred.\n" );
+            Key_up();
+            Key_capture_start();
+            // printf( "PA.9 falling INT occurred.\n" );
         }
         else{
-            printf( "PA.9 rising INT occurred.\n" );
+            Key_down();
+            Key_capture_start();
+            // printf( "PA.9 rising INT occurred.\n" );
         }
     }
     else if( GPIO_GET_INT_FLAG( PA, BIT10 ) ) {
@@ -460,5 +464,30 @@ void USBD_IRQHandler(void)
             /* Clear event flag */
             USBD_CLR_INT_FLAG(USBD_INTSTS_EP7);
         }
+    }
+}
+
+extern volatile uint8_t g;
+void TMR0_IRQHandler(void)
+{
+    if (TIMER_GetIntFlag(TIMER0))
+    {
+        uint8_t timer_en = 0;
+        timer_en |= KeyTimer_Handler(); 
+        if(timer_en == 1) 
+					Key_capture_start();
+
+        timer_en |= Timer_delay_Handeler();
+
+        timer_en |= KeyCaptureTimer_Handler();
+
+        timer_en |= LED_timer_handler();
+
+        if(timer_en == 0){
+            TIMER_Stop(TIMER0);
+            TIMER_ResetCounter(TIMER0);
+        }
+        /* Clear Timer0 time-out interrupt flag */
+        TIMER_ClearIntFlag(TIMER0);
     }
 }

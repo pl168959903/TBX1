@@ -44,6 +44,8 @@ void TBX1_clk_init_wdt(void);
 void TBX1_clk_deinit_wdt(void);
 void TBX1_clk_init_wwdt(void);
 void TBX1_clk_deinit_wwdt(void);
+void TBX1_clk_init_tmr0(void);
+void TBX1_clk_deinit_tmr0(void);
 void TBX1_clk_init_base(void);
 void Clock_Init(void);
 #ifdef __cplusplus

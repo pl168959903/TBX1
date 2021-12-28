@@ -274,4 +274,12 @@ MCU:M032SG8AE(LQFP64)
 /* Configure WWDT Interrupt */
 #define WWDT_INTEN_CONFIG                       (1)
 
+/*--------------------------------------------------------------------------*/
+/* TIMER0 Configuration                                                     */
+/*--------------------------------------------------------------------------*/
+
+#define TIMER0_MODE                     TIMER_PERIODIC_MODE
+
+#define TIMER0_FREQ                     1000
+
 /*** (C) COPYRIGHT 2016-2021 Nuvoton Technology Corp. ***/

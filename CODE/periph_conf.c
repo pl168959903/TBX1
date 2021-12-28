@@ -699,6 +699,20 @@ void HDIV_Init()
     HDIV->DIVISOR = 1;
 }
 
+void TIMER0_Init()
+{
+    TIMER_Open(TIMER0, TIMER0_MODE, TIMER0_FREQ);
+
+#if (TIMER0_MODE == TIMER_TOGGLE_MODE)
+    TIMER_SELECT_TOUT_PIN(TIMER0, TIMER_TOUT_PIN_FROM_TX);
+#endif
+
+    // Enable timer time-out interrupt
+    TIMER_EnableInt(TIMER0);
+
+    NVIC_EnableIRQ(TMR0_IRQn);
+
+}
 void Periph_Init(void)
 {
 
@@ -722,14 +736,16 @@ void Periph_Init(void)
 
     USBD_Init();
 
-    WDT_Init();
+    // WDT_Init();
 
-    WWDT_Init();
+    // WWDT_Init();
 
     RTC_Init();
 
     FMC_Init();
 
     HDIV_Init();
+    
+    TIMER0_Init();
 
 }

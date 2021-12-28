@@ -242,6 +242,21 @@ void TBX1_clk_deinit_wwdt(void)
     return;
 }
 
+void TBX1_clk_init_tmr0(void)
+{
+    CLK_EnableModuleClock(TMR0_MODULE);
+    CLK_SetModuleClock(TMR0_MODULE, CLK_CLKSEL1_TMR0SEL_PCLK0, MODULE_NoMsk);
+
+    return;
+}
+
+void TBX1_clk_deinit_tmr0(void)
+{
+    CLK_DisableModuleClock(TMR0_MODULE);
+
+    return;
+}
+
 void TBX1_clk_init_base(void)
 {
     /* Enable clock source */
@@ -307,6 +322,7 @@ void Clock_Init(void)
     TBX1_clk_init_usbd();
     TBX1_clk_init_wdt();
     TBX1_clk_init_wwdt();
+    TBX1_clk_init_tmr0();
 
     /* Update System Core Clock */
     /* User can use SystemCoreClockUpdate() to calculate SystemCoreClock. */
