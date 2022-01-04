@@ -10,12 +10,13 @@
 #define LED_B PB7
 #define LED_G PB8
 #define LED_R PB9
-
+#define PW_STDBY PA10
+#define PW_CHARGE PA11
 
 typedef enum{
     discharging,
     charging,
-    fully_charged
+    fullyCharge
 }power_state;
 
 
@@ -42,5 +43,7 @@ void LED_rgb_init( void );
 void LED_start( void );
 void LED_stop( void );
 void LED_updataColor( color c ) ;
+
+void PW_charge_handler( void );
 
 #endif  

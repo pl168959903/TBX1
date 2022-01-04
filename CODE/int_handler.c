@@ -86,54 +86,37 @@ void ADC_IRQHandler(void)
 void GPABGH_IRQHandler( void ) {
     volatile uint32_t temp;
     
-    if ( GPIO_GET_INT_FLAG( PA, BIT6 ) ) {
-        GPIO_CLR_INT_FLAG( PA, BIT6 );
-        if (PA6 == 0){
-            printf( "PA.6 falling INT occurred.\n" );
-        }
-        else{
-            printf( "PA.6 rising INT occurred.\n" );
-        }
-    }
-    else if( GPIO_GET_INT_FLAG( PA, BIT7 ) ) {
-        GPIO_CLR_INT_FLAG( PA, BIT7 );
-        if (PA7 == 0){
-            printf( "PA.7 falling INT occurred.\n" );
-        }
-        else{ 
-            printf( "PA.7 rising INT occurred.\n" );
-        }
-    }
-    else if( GPIO_GET_INT_FLAG( PA, BIT9 ) ) {
+
+    if( GPIO_GET_INT_FLAG( PA, BIT9 ) ) {
         GPIO_CLR_INT_FLAG( PA, BIT9 );
         if (PA9 == 0){
-            Key_up();
-            Key_capture_start();
-            // printf( "PA.9 falling INT occurred.\n" );
+            // Key_up();
+            // Key_capture_start();
         }
         else{
-            Key_down();
-            Key_capture_start();
-            // printf( "PA.9 rising INT occurred.\n" );
+            // Key_down();
+            // Key_capture_start();
         }
     }
     else if( GPIO_GET_INT_FLAG( PA, BIT10 ) ) {
         GPIO_CLR_INT_FLAG( PA, BIT10 );
         if (PA10 == 0){
-            printf( "PA.10 falling INT occurred.\n" );
+            // printf( "PA.10 falling INT occurred.\n" );
         }
         else{
-            printf( "PA.10 rising INT occurred.\n" );
+            // printf( "PA.10 rising INT occurred.\n" );
         }
+        // PW_charge_handler();
     }
     else if( GPIO_GET_INT_FLAG( PA, BIT11 ) ) {
         GPIO_CLR_INT_FLAG( PA, BIT11 );
         if (PA11 == 0){
-            printf( "PA.11 falling INT occurred.\n" );
+            // printf( "PA.11 falling INT occurred.\n" );
         }
         else{
-            printf( "PA.11 rising INT occurred.\n" );
+            // printf( "PA.11 rising INT occurred.\n" );
         }
+        // PW_charge_handler();
     }
     else {
         printf( "Un-expected interrupts.\n" );
@@ -148,59 +131,44 @@ void GPABGH_IRQHandler( void ) {
     }
 }
 
-void EINT0_IRQHandler(void)
+void EINT024_IRQHandler_TT(void)
 {
+    if ( GPIO_GET_INT_FLAG( PA, BIT6 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT6 );
 
-    /* To check if PA.6 external interrupt occurred */
-    if (GPIO_GET_INT_FLAG(PA, BIT6))
-    {
-        GPIO_CLR_INT_FLAG(PA, BIT6);
-        printf("PA.6 EINT0 occurred.\n");
+    }
+}
+extern volatile uint8_t rf_int_flag;
+void EINT135_IRQHandler(void)
+{
+    if( GPIO_GET_INT_FLAG( PA, BIT7 ) ) {
+        GPIO_CLR_INT_FLAG( PA, BIT7 );
+        rf_int_flag = 1;
     }
 
 }
 
-void EINT1_IRQHandler(void)
-{
+extern volatile uint8_t pdmaSpiLock;
 
-    /* To check if PA.7 external interrupt occurred */
-    if (GPIO_GET_INT_FLAG(PA, BIT7))
+void PDMA_IRQHandler( void ) {
+    uint32_t u32Status = PDMA_GET_INT_STATUS( PDMA );
+
+    if ( u32Status & PDMA_INTSTS_TDIF_Msk ) /* done */
     {
-        GPIO_CLR_INT_FLAG(PA, BIT7);
-        printf("PA.7 EINT1 occurred.\n");
+        uint32_t pdmaCh = PDMA_GET_TD_STS( PDMA );
+
+        if ( pdmaCh & PDMA_TDSTS_TDIF0_Msk ) { 
+            PDMA_CLR_TD_FLAG( PDMA, PDMA_TDSTS_TDIF0_Msk ); 
+        }
+        else if ( (pdmaCh & SPI_PDMA_CH_EN_MSK) ==  SPI_PDMA_CH_EN_MSK ) {
+            pdmaSpiLock = 0;
+            PDMA_CLR_TD_FLAG( PDMA, SPI_PDMA_CH_EN_MSK );
+        }
     }
-
-}
-void I2C0_IRQHandler(void)
-{
-    uint32_t u32Status;
-
-    u32Status = I2C_GET_STATUS(I2C0);
-
-    (void)u32Status; /*To remove complier warning. The code is unnecessary if u32Status is used.*/
-
-    if (I2C_GET_TIMEOUT_FLAG(I2C0))
-    {
-        /* Clear I2C0 Timeout Flag */
-        I2C_ClearTimeoutFlag(I2C0);
+    else {
+        printf( "Unexpected interrupt !!\n" );
+        while ( 1 ) { __NOP(); };
     }
-    else
-    {
-        /*TODO: implement user function here*/
-        //                if (s_pfnI2C0Handler != NULL)
-        //                    s_pfnI2C0Handler(u32Status);
-    }
-}
-void PDMA_IRQHandler(void)
-{
-    uint32_t u32Status = PDMA_GET_INT_STATUS(PDMA);
-
-    if (u32Status & PDMA_INTSTS_TDIF_Msk)     /* done */
-    {
-        /* Transfer done */
-    }
-    else
-        printf("Unexpected interrupt !!\n");
 }
 void RTC_IRQHandler(void)
 {
@@ -227,6 +195,7 @@ void SPI0_IRQHandler(void)
     if (u32IntFlag)
     {
         printf("SPI INT Flag:0x%x\n", u32IntFlag);
+        SPI_ClearIntFlag(SPI0, u32IntFlag);
     }
     else
     {
@@ -467,7 +436,7 @@ void USBD_IRQHandler(void)
     }
 }
 
-extern volatile uint8_t g;
+// uint8_t counts_ms_handler( void );
 void TMR0_IRQHandler(void)
 {
     if (TIMER_GetIntFlag(TIMER0))
@@ -482,6 +451,8 @@ void TMR0_IRQHandler(void)
         timer_en |= KeyCaptureTimer_Handler();
 
         timer_en |= LED_timer_handler();
+
+        // timer_en |= counts_ms_handler();
 
         if(timer_en == 0){
             TIMER_Stop(TIMER0);

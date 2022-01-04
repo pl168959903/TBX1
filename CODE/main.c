@@ -97,20 +97,25 @@ int32_t main( void ) {
     ext_key_timer_stop_handle  = key_timer_stop;
 
     System_Init();
-    Key_init();
-    LED_rgb_init();
-    LED_start();
+    // Key_init();
+    // LED_rgb_init();
+    // LED_start();
     counter_init( &delayCount );
 
-    if ( KEY0 == 1 ) Key_down();
-
+    // if ( KEY0 == 1 ) Key_down();
+    RF24_init();
+    RF24_Tx_init();
+    LED_B = LED_R = LED_G = 0;
     printf( "*** Init Done, User add operation code***\n" );
-    // Timer_delay( 1000 );
 
-    Key_capture_until( &( key_event_capture ){ .event = keepPress, .clearHistoryEvent = 1, .Timeout = 0, .handler_ptr = Enable_v33 } );
-    LED_updataColor((color){.red = 16, .green = 16, .blue = 16});
-    Key_capture_until( &( key_event_capture ){ .event = longPress, .clearHistoryEvent = 1, .Timeout = 0, .handler_ptr = nop_funciton } );
-    Key_add_capture( &( key_event_capture ){ .event = keepPress, .clearHistoryEvent = 1, .Timeout = 0, .handler_ptr = Disable_v33 } );
+    // Key_capture_until( &( key_event_capture ){ .event = keepPress, .clearHistoryEvent = 1, .Timeout = 0, .handler_ptr = Enable_v33 } );
+    // LED_updataColor((color){.red = 16, .green = 16, .blue = 16});
+    // Key_capture_until( &( key_event_capture ){ .event = longPress, .clearHistoryEvent = 1, .Timeout = 0, .handler_ptr = nop_funciton } );
+    // Key_add_capture( &( key_event_capture ){ .event = keepPress, .clearHistoryEvent = 1, .Timeout = 0, .handler_ptr = Disable_v33 } );
+
+    // Timer_delay( 1000 );
+    // PW_charge_handler();
+    Enable_v33();
 
     printf( "start debug function.\n" );
     debug_functions();

@@ -13,6 +13,9 @@
 #include "sw_buf.h"
 #include "key.h"
 #include "user.h"
+#include "spiPdma.h"
+#include "RF24_Reg.h"
+#include "axis.h"
 #include <stdio.h>
 #include <string.h>
 

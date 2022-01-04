@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>MEMS_20648,MEMS_SECONDARY_DEVICE,MEMS_AUGMENTED_SENSORS,BIAS_SET_TO_DMP</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\Library\CMSIS\Include;..\..\..\Library\Device\Nuvoton\M031\Include;..\..\..\Library\StdDriver\inc;.\CODE;..\</IncludePath>
+              <IncludePath>..\..\..\Library\CMSIS\Include;..\..\..\Library\Device\Nuvoton\M031\Include;..\..\..\Library\StdDriver\inc;.\CODE;..\;.\Mems;.\Mems\common;.\Mems\dmp3;.\Mems\dmp3a;.\Mems\driver;.\Mems\invn;.\Mems\invn\common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -528,6 +528,21 @@
               <FileType>1</FileType>
               <FilePath>.\CODE\user.c</FilePath>
             </File>
+            <File>
+              <FileName>spiPdma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\CODE\spiPdma.c</FilePath>
+            </File>
+            <File>
+              <FileName>wireless.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\CODE\wireless.c</FilePath>
+            </File>
+            <File>
+              <FileName>axis.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\CODE\axis.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -542,6 +557,111 @@
               <FileName>usbd_class.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\USBD\usbd_class.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AXIS_Mems_common</GroupName>
+          <Files>
+            <File>
+              <FileName>inv_mems_drv_hook.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\common\inv_mems_drv_hook.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AXIS_Mems_dmp3</GroupName>
+          <Files>
+            <File>
+              <FileName>inv_mems_interface_mapping.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\dmp3\inv_mems_interface_mapping.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AXIS_Mems_dmp3a</GroupName>
+          <Files>
+            <File>
+              <FileName>dmp3Default_20648.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\dmp3a\dmp3Default_20648.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AXIS_Mems_driver</GroupName>
+          <Files>
+            <File>
+              <FileName>inv_mems_augmented_sensors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_augmented_sensors.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_base_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_base_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_base_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_base_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_data_converter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_data_converter.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_load_firmware.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_load_firmware.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_mpu_fifo_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_mpu_fifo_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_mpu_selftest.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_mpu_selftest.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_secondary_transport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_secondary_transport.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_slave_compass.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_slave_compass.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_slave_pressure.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_slave_pressure.c</FilePath>
+            </File>
+            <File>
+              <FileName>inv_mems_transport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\driver\inv_mems_transport.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AXIS_Mems_invn</GroupName>
+          <Files>
+            <File>
+              <FileName>mlmath.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\invn\common\mlmath.c</FilePath>
+            </File>
+            <File>
+              <FileName>ml_math_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Mems\invn\common\ml_math_func.c</FilePath>
             </File>
           </Files>
         </Group>

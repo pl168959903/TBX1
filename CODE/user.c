@@ -1,5 +1,31 @@
 #include "user.h"
 
+power_state pw_state;
+
+void PW_charge_handler( void ) {
+    if ( PW_STDBY == 1 && PW_CHARGE == 1 )
+        pw_state = discharging;
+    else if ( PW_STDBY == 1 && PW_CHARGE == 0 )
+        pw_state = charging;
+    else if ( PW_STDBY == 0 && PW_CHARGE == 1 )
+        pw_state = fullyCharge;
+
+    switch ( pw_state ) {
+    case discharging:
+        LED_updataColor( ( color ){ .red = 0, .green = 0, .blue = 16 } );
+        printf("Discharging.\n");
+        break;
+    case charging:
+        LED_updataColor( ( color ){ .red = 16, .green = 0, .blue = 0 } );
+        printf("Charging.\n");
+        break;
+    case fullyCharge:
+        LED_updataColor( ( color ){ .red = 0, .green = 16, .blue = 0 } );
+        printf("FullyCharge.\n");
+        break;
+    }
+}
+
 void LED_R_on( void ) {
     LED_R = 0;
 }
@@ -67,12 +93,12 @@ void LED_updataColor( color c ) {
 
 void LED_rgb_init( void ) {
 
-    led_r = (led_pwm){ .value = 0, .LED_on = LED_R_on, .LED_off = LED_R_off };
-    led_g = (led_pwm){ .value = 0, .LED_on = LED_G_on, .LED_off = LED_G_off };
-    led_b = (led_pwm){ .value = 0, .LED_on = LED_B_on, .LED_off = LED_B_off };
-    led_pwm_init( &led_r);
-    led_pwm_init( &led_g);
-    led_pwm_init( &led_b);
+    led_r = ( led_pwm ){ .value = 0, .LED_on = LED_R_on, .LED_off = LED_R_off };
+    led_g = ( led_pwm ){ .value = 0, .LED_on = LED_G_on, .LED_off = LED_G_off };
+    led_b = ( led_pwm ){ .value = 0, .LED_on = LED_B_on, .LED_off = LED_B_off };
+    led_pwm_init( &led_r );
+    led_pwm_init( &led_g );
+    led_pwm_init( &led_b );
 }
 
 uint8_t LED_timer_handler( void ) {
@@ -87,13 +113,12 @@ uint8_t LED_timer_handler( void ) {
     }
 }
 
-void debug_functions( void ) {
-    printf( "LED debug start.\n" );
+// void debug_functions( void ) {
+//     printf( "LED debug start.\n" );
 
-
-    // while ( 1 ) {
-    //     Timer_delay( 500 );
-    //     printf("Red = %d, Green = %d, Blue = %d\n", c.red, c.green, c.blue);
-    //     __NOP();
-    // };
-}
+//     // while ( 1 ) {
+//     //     Timer_delay( 500 );
+//     //     printf("Red = %d, Green = %d, Blue = %d\n", c.red, c.green, c.blue);
+//     //     __NOP();
+//     // };
+// }

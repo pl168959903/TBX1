@@ -77,7 +77,7 @@ void GPIO_Init()
     //GPIO_PA mode
     PA->MODE =
 
-        (0x0UL << GPIO_MODE_MODE6_Pos) |
+        (0x3UL << GPIO_MODE_MODE6_Pos) |
 
         (0x0UL << GPIO_MODE_MODE7_Pos) |
 
@@ -381,13 +381,12 @@ void I2C0_Init()
 {
     I2C_Open(I2C0, 400000);
 
-    I2C_EnableTimeout(I2C0, I2C0_TIMEOUT_SEL);
+    // I2C_EnableTimeout(I2C0, I2C0_TIMEOUT_SEL);
 
-    I2C0->CTL1 |= I2C_CTL1_TXPDMAEN_Msk | I2C_CTL1_RXPDMAEN_Msk;
+    // I2C0->CTL1 |= I2C_CTL1_TXPDMAEN_Msk | I2C_CTL1_RXPDMAEN_Msk | I2C_CTL1_PDMASTR_Msk;
 
-    I2C_EnableInt(I2C0);
-    NVIC_EnableIRQ(I2C0_IRQn);
-
+    // I2C_EnableInt(I2C0);
+    // NVIC_EnableIRQ(I2C0_IRQn);
 }
 /*************************************/
 /**             PDMA                **/
@@ -395,18 +394,6 @@ void I2C0_Init()
 
 uint16_t g_au16CH0DesArray[PDMA_CH0_DATA_LENGTH];
 uint16_t *g_pu16CH0DesArray;
-
-uint8_t g_au8CH1SrcArray[PDMA_CH1_DATA_LENGTH];
-uint8_t *g_pu8CH1SrcArray;
-
-uint8_t g_au8CH2DesArray[PDMA_CH2_DATA_LENGTH];
-uint8_t *g_pu8CH2DesArray;
-
-uint8_t g_au8CH3SrcArray[PDMA_CH3_DATA_LENGTH];
-uint8_t *g_pu8CH3SrcArray;
-
-uint8_t g_au8CH4DesArray[PDMA_CH4_DATA_LENGTH];
-uint8_t *g_pu8CH4DesArray;
 
 void PDMA_Init()
 {
@@ -431,84 +418,29 @@ void PDMA_Init()
     /* Request source is PDMA_ADC_RX */
     PDMA_SetTransferMode(PDMA, 0, PDMA_ADC_RX, 0, 0);
 
-    g_pu8CH1SrcArray = g_au8CH1SrcArray;
-
     /* Open CH1 */
     PDMA_Open(PDMA, 1 << 1);
-
-    /* Transfer count is PDMA_CH1_DATA_LENGTH, transfer width is PDMA_WIDTH_8 */
-    PDMA_SetTransferCnt(PDMA, 1, PDMA_WIDTH_8, PDMA_CH1_DATA_LENGTH);
-
-    /* Set source address is g_pu8CH1SrcArray, destination address is &I2C0->DAT */
-    PDMA_SetTransferAddr(PDMA, 1, (uint32_t)g_pu8CH1SrcArray, PDMA_SAR_INC, (uint32_t)&I2C0->DAT, PDMA_DAR_FIX);
-
-    /* Set transfer mode and burst size */
-    PDMA_SetBurstType(PDMA, 1, PDMA_REQ_SINGLE, PDMA_BURST_1);
-
-    /* Enable timeout function and set timeout counter */
-    PDMA_SetTimeOut(PDMA, 1, 1, 65535);
-
-    /* Request source is PDMA_I2C0_TX */
-    PDMA_SetTransferMode(PDMA, 1, PDMA_I2C0_TX, 0, 0);
-
-    g_pu8CH2DesArray = g_au8CH2DesArray;
+    PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC1_Msk) | (PDMA_I2C0_TX << PDMA_REQSEL0_3_REQSRC1_Pos);
 
     /* Open CH2 */
     PDMA_Open(PDMA, 1 << 2);
-
-    /* Transfer count is PDMA_CH2_DATA_LENGTH, transfer width is PDMA_WIDTH_8 */
-    PDMA_SetTransferCnt(PDMA, 2, PDMA_WIDTH_8, PDMA_CH2_DATA_LENGTH);
-
-    /* Set source address is &I2C0->DAT, destination address is g_pu8CH2DesArray */
-    PDMA_SetTransferAddr(PDMA, 2, (uint32_t)&I2C0->DAT, PDMA_SAR_FIX, (uint32_t)g_pu8CH2DesArray, PDMA_DAR_INC);
-
-    /* Set transfer mode and burst size */
-    PDMA_SetBurstType(PDMA, 2, PDMA_REQ_SINGLE, PDMA_BURST_1);
-
-    /* Request source is PDMA_I2C0_RX */
-    PDMA_SetTransferMode(PDMA, 2, PDMA_I2C0_RX, 0, 0);
-
-    g_pu8CH3SrcArray = g_au8CH3SrcArray;
+    PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC2_Msk) | (PDMA_I2C0_RX << PDMA_REQSEL0_3_REQSRC2_Pos);
 
     /* Open CH3 */
     PDMA_Open(PDMA, 1 << 3);
-
-    /* Transfer count is PDMA_CH3_DATA_LENGTH, transfer width is PDMA_WIDTH_8 */
-    PDMA_SetTransferCnt(PDMA, 3, PDMA_WIDTH_8, PDMA_CH3_DATA_LENGTH);
-
-    /* Set source address is g_pu8CH3SrcArray, destination address is &SPI0->TX */
-    PDMA_SetTransferAddr(PDMA, 3, (uint32_t)g_pu8CH3SrcArray, PDMA_SAR_INC, (uint32_t)&SPI0->TX, PDMA_DAR_FIX);
-
-    /* Set transfer mode and burst size */
-    PDMA_SetBurstType(PDMA, 3, PDMA_REQ_SINGLE, PDMA_BURST_1);
-
-    /* Request source is PDMA_SPI0_TX */
-    PDMA_SetTransferMode(PDMA, 3, PDMA_SPI0_TX, 0, 0);
-
-    g_pu8CH4DesArray = g_au8CH4DesArray;
+    PDMA->REQSEL0_3 = (PDMA->REQSEL0_3 & ~PDMA_REQSEL0_3_REQSRC3_Msk) | (PDMA_SPI0_TX << PDMA_REQSEL0_3_REQSRC3_Pos);
 
     /* Open CH4 */
     PDMA_Open(PDMA, 1 << 4);
-
-    /* Transfer count is PDMA_CH4_DATA_LENGTH, transfer width is PDMA_WIDTH_8 */
-    PDMA_SetTransferCnt(PDMA, 4, PDMA_WIDTH_8, PDMA_CH4_DATA_LENGTH);
-
-    /* Set source address is &SPI0->RX, destination address is g_pu8CH4DesArray */
-    PDMA_SetTransferAddr(PDMA, 4, (uint32_t)&SPI0->RX, PDMA_SAR_FIX, (uint32_t)g_pu8CH4DesArray, PDMA_DAR_INC);
-
-    /* Set transfer mode and burst size */
-    PDMA_SetBurstType(PDMA, 4, PDMA_REQ_SINGLE, PDMA_BURST_1);
-
-    /* Request source is PDMA_SPI0_RX */
-    PDMA_SetTransferMode(PDMA, 4, PDMA_SPI0_RX, 0, 0);
+    PDMA->REQSEL4_7 = (PDMA->REQSEL4_7 & ~PDMA_REQSEL4_7_REQSRC4_Msk) | PDMA_SPI0_RX;
 
     PDMA_EnableInt(PDMA, 0, PDMA_INT_TRANS_DONE);
 
-    PDMA_EnableInt(PDMA, 0, PDMA_INT_TIMEOUT);
+    // PDMA_EnableInt(PDMA, 0, PDMA_INT_TIMEOUT);
 
     PDMA_EnableInt(PDMA, 1, PDMA_INT_TRANS_DONE);
 
-    PDMA_EnableInt(PDMA, 1, PDMA_INT_TIMEOUT);
+    // PDMA_EnableInt(PDMA, 1, PDMA_INT_TIMEOUT);
 
     PDMA_EnableInt(PDMA, 2, PDMA_INT_TRANS_DONE);
 
@@ -583,13 +515,13 @@ void SPII2S_Init()
 {
 
     /* This function make SPI module be ready to transfer */
-    SPI_Open(SPI0, SPI_MASTER, SPI_MODE_3, 8, 10000000);
+    SPI_Open(SPI0, SPI_MASTER, SPI_MODE_0, 8, 10000000);
 
     /* Enable auto SS function */
     SPI0->SSCTL = (SPI0->SSCTL & (~SPI_SSCTL_AUTOSS_Msk)) | SPI_SSCTL_AUTOSS_Msk | SPI_SSCTL_SS_Msk;
 
     /* Select SS level */
-    SPI0->SSCTL = (SPI0->SSCTL & (~SPI_SSCTL_SSACTPOL_Msk)) | SPI_SS_ACTIVE_HIGH;
+    SPI0->SSCTL = (SPI0->SSCTL & (~SPI_SSCTL_SSACTPOL_Msk)) | SPI_SS_ACTIVE_LOW;
 
     /* Set MSB first */
     SPI_SET_MSB_FIRST(SPI0);
@@ -598,10 +530,10 @@ void SPII2S_Init()
     SPI_SetFIFO(SPI0, 7, 7);
 
     /* Enable interrupt type */
-    SPI_EnableInt(SPI0, SPI_UNIT_INT_MASK | SPI_FIFO_RXOV_INT_MASK | SPI_FIFO_RXTO_INT_MASK);
+    // SPI_EnableInt(SPI0, SPI_UNIT_INT_MASK | SPI_FIFO_RXOV_INT_MASK | SPI_FIFO_RXTO_INT_MASK);
 
     /* Enable interrupt function */
-    NVIC_EnableIRQ(SPI0_IRQn);
+    // NVIC_EnableIRQ(SPI0_IRQn);
 
 }
 void SYS_Init(void)
@@ -734,7 +666,7 @@ void Periph_Init(void)
 
     SPII2S_Init() ;
 
-    USBD_Init();
+    // USBD_Init();
 
     // WDT_Init();
 
